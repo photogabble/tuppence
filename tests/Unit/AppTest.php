@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Photogabble\Tuppence\Tests\Unit;
 
 use League\Container\Container;
 use League\Event\Emitter;
@@ -8,7 +8,7 @@ use League\Route\RouteCollection;
 use Photogabble\Tuppence\App;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tests\TestEmitter;
+use Photogabble\Tuppence\Tests\TestEmitter;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequestFactory;

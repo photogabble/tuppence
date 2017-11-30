@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Photogabble\Tuppence\Tests;
 
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\EmitterInterface;

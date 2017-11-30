@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Photogabble\Tuppence\Tests;
 
 
 use Photogabble\Tuppence\App;

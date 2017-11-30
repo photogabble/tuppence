@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Photogabble\Tuppence\Tests\Feature;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tests\BootsApp;
+use Photogabble\Tuppence\Tests\BootsApp;
 use Zend\Diactoros\ServerRequestFactory;
 
 class RoutesTest extends BootsApp
