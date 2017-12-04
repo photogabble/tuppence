@@ -3,9 +3,13 @@
 namespace Photogabble\Tuppence\Tests\Unit;
 
 use League\Container\Container;
+use League\Container\Exception\NotFoundException;
 use League\Event\Emitter;
 use League\Route\RouteCollection;
 use Photogabble\Tuppence\App;
+use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
+use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerException;
+use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerResponseException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Photogabble\Tuppence\Tests\TestEmitter;
@@ -86,6 +90,72 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
     public function testCollectionExceptionThrown()
     {
-        // @todo
+        $emitter = new TestEmitter();
+        $app = new App($emitter);
+        try {
+            $app->getContainer()->get('hello-world');
+        } catch (\Exception $e) {
+            $this->assertTrue($e instanceof NotFoundException);
+        }
+    }
+
+    public function testExceptionHandlerEmptyString()
+    {
+        $emitter = new TestEmitter();
+        $app = new App($emitter);
+        try{
+            $app->setExceptionHandler('');
+        } catch (\Exception $e) {
+            $this->assertTrue($e instanceof NotFoundException);
+        }
+    }
+
+    public function testExceptionHandlerInvalidClass()
+    {
+        $emitter = new TestEmitter();
+        $app = new App($emitter);
+        try{
+            $app->setExceptionHandler(new TestEmitter());
+        } catch (\Exception $e) {
+            $this->assertTrue($e instanceof InvalidHandlerException);
+        }
+    }
+
+    public function testExceptionHandlerFailsWhenNotValidResponse()
+    {
+        $exceptionMock = $this->createMock(DefaultExceptionHandler::class);
+        $exceptionMock->expects($this->once())
+            ->method('__invoke')
+            ->with($this->isInstanceOf(\League\Route\Http\Exception\NotFoundException::class));
+
+        $emitter = new TestEmitter();
+        $app = new App($emitter);
+
+        $app->setExceptionHandler($exceptionMock);
+
+        $request = ServerRequestFactory::fromGlobals();
+        try{
+            $app->dispatch($request);
+        } catch (\Exception$e) {
+            $this->assertTrue($e instanceof InvalidHandlerResponseException);
+        }
+    }
+
+    public function testExceptionHandler()
+    {
+        $exceptionMock = $this->createMock(DefaultExceptionHandler::class);
+        $exceptionMock->method('__invoke')->willReturn(new Response());
+
+        $exceptionMock->expects($this->once())
+            ->method('__invoke')
+            ->with($this->isInstanceOf(\League\Route\Http\Exception\NotFoundException::class));
+
+        $emitter = new TestEmitter();
+        $app = new App($emitter);
+
+        $app->setExceptionHandler($exceptionMock);
+
+        $request = ServerRequestFactory::fromGlobals();
+        $app->dispatch($request);
     }
 }

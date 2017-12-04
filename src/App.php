@@ -7,6 +7,9 @@ use League\Container\ContainerInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Event\EmitterTrait;
 use League\Route\RouteCollection;
+use Photogabble\Tuppence\ErrorHandlers\ExceptionHandler;
+use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerException;
+use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerResponseException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -28,7 +31,7 @@ class App
     private $router;
 
     /**
-     * @var callable
+     * @var null|ExceptionHandler
      */
     private $exceptionHandler;
 
@@ -155,12 +158,24 @@ class App
     }
 
     /**
+     * Add a OPTIONS route.
+     *
+     * @param $route
+     * @param $action
+     */
+    public function options($route, $action)
+    {
+        $this->getRouter()->map('OPTIONS', $route, $action);
+    }
+
+    /**
      * @param ServerRequest|null $request
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Exception
      */
-    public function dispatch(ServerRequest $request = null)
+    public function dispatch(ServerRequest $request = null, $catchesExceptions = true)
     {
         $this->getContainer()->share('request', function () use ($request) {
             if (is_null($request)) {
@@ -169,17 +184,34 @@ class App
 
             return $request;
         });
+
         $this->emit('before.dispatch', $this->getContainer()->get('request'));
 
-        return $this->getRouter()->dispatch(
-            $this->getContainer()->get('request'),
-            $this->getContainer()->get('response')
-        );
+        try {
+            return $this->getRouter()->dispatch(
+                $this->getContainer()->get('request'),
+                $this->getContainer()->get('response')
+            );
+        } catch (\Exception $e) {
+            if (!$catchesExceptions || is_null($this->exceptionHandler)) {
+                throw $e;
+            }
+
+            $handler = $this->exceptionHandler;
+            $response = $handler($e);
+
+            if (!$response instanceof \Psr\Http\Message\ResponseInterface) {
+                throw new InvalidHandlerResponseException('The exception handler ['.get_class($handler).'] did not return a valid response.');
+            }
+
+            return $response;
+        }
     }
 
     /**
      * @param ServerRequest|null $request
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -190,5 +222,24 @@ class App
         $this->container->get('emitter')->emit($response);
 
         return $response;
+    }
+
+    /**
+     * @param null|ExceptionHandler $exceptionHandler
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws InvalidHandlerException
+     */
+    public function setExceptionHandler($exceptionHandler)
+    {
+        if (is_string($exceptionHandler)){
+            $exceptionHandler = $this->getContainer()->get($exceptionHandler);
+        }
+
+        if (!$exceptionHandler instanceof ExceptionHandler) {
+            throw new InvalidHandlerException('Exception handlers must implement the ExceptionHandler interface.');
+        }
+
+        $this->exceptionHandler = $exceptionHandler;
     }
 }
