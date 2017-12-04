@@ -35,4 +35,9 @@ class BootsApp extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(200, $this->emitter->getResponse()->getStatusCode());
     }
+
+    protected function assertResponseCodeEquals($code = 200)
+    {
+        $this->assertEquals($code, $this->emitter->getResponse()->getStatusCode());
+    }
 }
