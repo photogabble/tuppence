@@ -198,7 +198,7 @@ class App
             }
 
             $handler = $this->exceptionHandler;
-            $response = $handler($e, $request);
+            $response = $handler($e, $this->getContainer()->get('request'));
 
             if (!$response instanceof \Psr\Http\Message\ResponseInterface) {
                 throw new InvalidHandlerResponseException('The exception handler ['.get_class($handler).'] did not return a valid response.');
