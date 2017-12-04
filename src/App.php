@@ -27,6 +27,11 @@ class App
      */
     private $router;
 
+    /**
+     * @var callable
+     */
+    private $exceptionHandler;
+
     public function __construct(EmitterInterface $emitter = null)
     {
         $this->getContainer()->share('emitter', function () use ($emitter) {
@@ -166,7 +171,10 @@ class App
         });
         $this->emit('before.dispatch', $this->getContainer()->get('request'));
 
-        return $this->getRouter()->dispatch($this->getContainer()->get('request'), $this->getContainer()->get('response'));
+        return $this->getRouter()->dispatch(
+            $this->getContainer()->get('request'),
+            $this->getContainer()->get('response')
+        );
     }
 
     /**

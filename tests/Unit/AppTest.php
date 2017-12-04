@@ -69,4 +69,23 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $app->run($request);
         $this->assertTrue($invoked);
     }
+
+    public function testRouterExceptionThrown()
+    {
+        $emitter = new TestEmitter();
+        $app = new App($emitter);
+
+        $request = ServerRequestFactory::fromGlobals();
+
+        try {
+            $app->run($request);
+        } catch (\Exception $e) {
+            $this->assertTrue($e instanceof \League\Route\Http\Exception\NotFoundException);
+        }
+    }
+
+    public function testCollectionExceptionThrown()
+    {
+        // @todo
+    }
 }
