@@ -10,6 +10,7 @@ use Photogabble\Tuppence\App;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerException;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerResponseException;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Photogabble\Tuppence\Tests\TestEmitter;
@@ -126,7 +127,10 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $exceptionMock = $this->createMock(DefaultExceptionHandler::class);
         $exceptionMock->expects($this->once())
             ->method('__invoke')
-            ->with($this->isInstanceOf(\League\Route\Http\Exception\NotFoundException::class));
+            ->with(
+                $this->isInstanceOf(\League\Route\Http\Exception\NotFoundException::class),
+                $this->isInstanceOf(RequestInterface::class)
+            );
 
         $emitter = new TestEmitter();
         $app = new App($emitter);
@@ -148,7 +152,10 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
         $exceptionMock->expects($this->once())
             ->method('__invoke')
-            ->with($this->isInstanceOf(\League\Route\Http\Exception\NotFoundException::class));
+            ->with(
+                $this->isInstanceOf(\League\Route\Http\Exception\NotFoundException::class),
+                $this->isInstanceOf(RequestInterface::class)
+            );
 
         $emitter = new TestEmitter();
         $app = new App($emitter);

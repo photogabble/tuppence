@@ -19,6 +19,13 @@ class DefaultExceptionHandler implements ExceptionHandler
     protected $ignore = [];
 
     /**
+     * @param string $class
+     */
+    public function addIgnored($class) {
+        array_push($this->ignore, $class);
+    }
+
+    /**
      * @param Exception|RouteNotFoundException|ContainerNotFoundException $e
      * @param RequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface
