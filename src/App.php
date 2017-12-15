@@ -225,7 +225,7 @@ class App
     }
 
     /**
-     * @param null|ExceptionHandler $exceptionHandler
+     * @param string|ExceptionHandler $exceptionHandler
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws InvalidHandlerException
