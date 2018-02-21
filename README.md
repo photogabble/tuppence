@@ -2,8 +2,8 @@
 <p align="center"><em>An Incredibly small "framework"</em></p>
 
 <p align="center">
-  <a href="https://packagist.org/packages/photogabble/tuppence"><img src="https://poser.pugx.org/photogabble/tuppence/v/stable.svg" alt="Latest Stable Version"></a>
-  <a href="LICENSE"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
+  <a href="https://packagist.org/packages/photogabble/tuppence"><img src="https://img.shields.io/packagist/v/photogabble/tuppence.svg" alt="Latest Stable Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/photogabble/tuppence.svg" alt="License"></a>
 </p>
 
 ## About Tuppence
