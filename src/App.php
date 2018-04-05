@@ -107,10 +107,11 @@ class App
      *
      * @param $route
      * @param $action
+     * @return \League\Route\Route
      */
     public function get($route, $action)
     {
-        $this->getRouter()->map('GET', $route, $action);
+        return $this->getRouter()->map('GET', $route, $action);
     }
 
     /**
@@ -118,10 +119,11 @@ class App
      *
      * @param $route
      * @param $action
+     * @return \League\Route\Route
      */
     public function post($route, $action)
     {
-        $this->getRouter()->map('POST', $route, $action);
+        return $this->getRouter()->map('POST', $route, $action);
     }
 
     /**
@@ -129,10 +131,11 @@ class App
      *
      * @param $route
      * @param $action
+     * @return \League\Route\Route
      */
     public function put($route, $action)
     {
-        $this->getRouter()->map('PUT', $route, $action);
+        return $this->getRouter()->map('PUT', $route, $action);
     }
 
     /**
@@ -140,10 +143,11 @@ class App
      *
      * @param $route
      * @param $action
+     * @return \League\Route\Route
      */
     public function delete($route, $action)
     {
-        $this->getRouter()->map('DELETE', $route, $action);
+        return $this->getRouter()->map('DELETE', $route, $action);
     }
 
     /**
@@ -151,10 +155,11 @@ class App
      *
      * @param $route
      * @param $action
+     * @return \League\Route\Route
      */
     public function patch($route, $action)
     {
-        $this->getRouter()->map('PATCH', $route, $action);
+        return $this->getRouter()->map('PATCH', $route, $action);
     }
 
     /**
@@ -162,10 +167,11 @@ class App
      *
      * @param $route
      * @param $action
+     * @return \League\Route\Route
      */
     public function options($route, $action)
     {
-        $this->getRouter()->map('OPTIONS', $route, $action);
+        return $this->getRouter()->map('OPTIONS', $route, $action);
     }
 
     /**
