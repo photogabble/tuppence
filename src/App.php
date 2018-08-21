@@ -21,6 +21,11 @@ class App
     use EmitterTrait;
 
     /**
+     * Tuppence Version.
+     */
+    const VERSION = '2.0.0';
+
+    /**
      * @var ContainerInterface
      */
     private $container;
