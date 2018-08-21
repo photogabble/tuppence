@@ -2,6 +2,7 @@
 <p align="center"><em>An Incredibly small "framework"</em></p>
 
 <p align="center">
+  <a href="https://travis-ci.org/photogabble/tuppence"><img src="https://travis-ci.org/photogabble/tuppence.svg?branch=master" title="master"></a>
   <a href="https://packagist.org/packages/photogabble/tuppence"><img src="https://img.shields.io/packagist/v/photogabble/tuppence.svg" alt="Latest Stable Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/photogabble/tuppence.svg" alt="License"></a>
 </p>
