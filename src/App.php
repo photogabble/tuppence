@@ -3,16 +3,20 @@
 namespace Photogabble\Tuppence;
 
 use League\Container\Container;
-use League\Container\ContainerInterface;
+use League\Route\Middleware\MiddlewareAwareInterface;
+use League\Route\Route;
+use League\Route\Router;
+use League\Route\Strategy\ApplicationStrategy;
+use Psr\Container\ContainerInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Event\EmitterTrait;
-use League\Route\RouteCollection;
 use Photogabble\Tuppence\ErrorHandlers\ExceptionHandler;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerException;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerResponseException;
+use Psr\Http\Server\MiddlewareInterface;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
+use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -26,12 +30,12 @@ class App
     const VERSION = '2.0.0';
 
     /**
-     * @var ContainerInterface
+     * @var Container|ContainerInterface
      */
     private $container;
 
     /**
-     * @var RouteCollection
+     * @var Router
      */
     private $router;
 
@@ -40,6 +44,10 @@ class App
      */
     private $exceptionHandler;
 
+    /**
+     * App constructor.
+     * @param EmitterInterface|null $emitter
+     */
     public function __construct(EmitterInterface $emitter = null)
     {
         $this->getContainer()->share('emitter', function () use ($emitter) {
@@ -56,22 +64,20 @@ class App
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container)
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
         $this->container->share(self::class, $this);
-
-        $this->getContainer()->share('response', Response::class);
-
+        $this->container->share('response', Response::class);
         $this->router = null;
     }
 
     /**
      * Get the applications Container.
      *
-     * @return ContainerInterface
+     * @return Container
      */
-    public function getContainer()
+    public function getContainer(): Container
     {
         if (is_null($this->container)) {
             $this->setContainer(new Container());
@@ -84,14 +90,17 @@ class App
     }
 
     /**
-     * Get the route collection.
+     * Get the Router
      *
-     * @return RouteCollection
+     * @see http://route.thephpleague.com/4.x/
+     * @return Router
      */
-    public function getRouter()
+    public function getRouter(): Router
     {
         if (!isset($this->router)) {
-            $this->router = new RouteCollection($this->getContainer());
+            $strategy = new ApplicationStrategy();
+            $strategy->setContainer($this->getContainer());
+            $this->router = (new Router)->setStrategy($strategy);
         }
 
         return $this->router;
@@ -110,9 +119,10 @@ class App
     /**
      * Add a GET route.
      *
+     * @see http://route.thephpleague.com/4.x/routes/
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
     public function get($route, $action)
     {
@@ -122,9 +132,10 @@ class App
     /**
      * Add a POST route.
      *
+     * @see http://route.thephpleague.com/4.x/routes/
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
     public function post($route, $action)
     {
@@ -134,9 +145,10 @@ class App
     /**
      * Add a PUT route.
      *
+     * @see http://route.thephpleague.com/4.x/routes/
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
     public function put($route, $action)
     {
@@ -146,9 +158,10 @@ class App
     /**
      * Add a DELETE route.
      *
+     * @see http://route.thephpleague.com/4.x/routes/
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
     public function delete($route, $action)
     {
@@ -158,9 +171,10 @@ class App
     /**
      * Add a PATCH route.
      *
+     * @see http://route.thephpleague.com/4.x/routes/
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
     public function patch($route, $action)
     {
@@ -170,17 +184,32 @@ class App
     /**
      * Add a OPTIONS route.
      *
+     * @see http://route.thephpleague.com/4.x/routes/
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
-    public function options($route, $action)
+    public function options($route, $action): Route
     {
         return $this->getRouter()->map('OPTIONS', $route, $action);
     }
 
     /**
+     * Define PSR-15 middleware that executes for the whole application.
+     *
+     * @see http://route.thephpleague.com/4.x/middleware/
+     * @see https://www.php-fig.org/psr/psr-15/
+     * @param MiddlewareInterface $middleware
+     * @return MiddlewareAwareInterface
+     */
+    public function middleware(MiddlewareInterface $middleware): MiddlewareAwareInterface
+    {
+        return $this->getRouter()->middleware($middleware);
+    }
+
+    /**
      * @param ServerRequest|null $request
+     * @param bool $catchesExceptions
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -200,8 +229,7 @@ class App
 
         try {
             return $this->getRouter()->dispatch(
-                $this->getContainer()->get('request'),
-                $this->getContainer()->get('response')
+                $this->getContainer()->get('request')
             );
         } catch (\Exception $e) {
             if (!$catchesExceptions || is_null($this->exceptionHandler)) {

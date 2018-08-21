@@ -3,7 +3,7 @@
 namespace Photogabble\Tuppence\Tests;
 
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response\EmitterInterface;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 
 class TestEmitter implements EmitterInterface
 {
@@ -12,15 +12,35 @@ class TestEmitter implements EmitterInterface
      */
     private $response;
 
-    public function emit(ResponseInterface $response)
+    /**
+     * Emit a response.
+     *
+     * Emits a response, including status line, headers, and the message body,
+     * according to the environment.
+     *
+     * Implementations of this method may be written in such a way as to have
+     * side effects, such as usage of header() or pushing output to the
+     * output buffer.
+     *
+     * Implementations MAY raise exceptions if they are unable to emit the
+     * response; e.g., if headers have already been sent.
+     *
+     * Implementations MUST return a boolean. A boolean `true` indicates that
+     * the emitter was able to emit the response, while `false` indicates
+     * it was not.
+     * @param ResponseInterface $response
+     * @return bool
+     */
+    public function emit(ResponseInterface $response): bool
     {
         $this->response = $response;
+        return true;
     }
 
     /**
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }

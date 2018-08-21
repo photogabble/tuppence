@@ -5,7 +5,7 @@ namespace Photogabble\Tuppence\Tests\Unit;
 use League\Container\Container;
 use League\Container\Exception\NotFoundException;
 use League\Event\Emitter;
-use League\Route\RouteCollection;
+use League\Route\Router;
 use Photogabble\Tuppence\App;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerException;
@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Photogabble\Tuppence\Tests\TestEmitter;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\Diactoros\ServerRequestFactory;
 
 class AppTest extends \PHPUnit_Framework_TestCase
@@ -34,7 +34,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $emitter = $this->createMock(EmitterInterface::class);
         $app = new App($emitter);
         $this->assertTrue($app->getContainer() instanceof Container);
-        $this->assertTrue($app->getRouter() instanceof RouteCollection);
+        $this->assertTrue($app->getRouter() instanceof Router);
         $this->assertTrue($app->getEmitter() instanceof Emitter);
     }
 
@@ -44,8 +44,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $emitter->expects($this->once())->method('emit');
 
         $app = new App($emitter);
-        $app->get('/', function (ServerRequestInterface $request, ResponseInterface $response) {
-            return $response;
+        $app->get('/', function () {
+            return new Response\TextResponse('Hello World!');
         });
         $app->run();
     }
@@ -57,10 +57,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
         $invoked = false;
 
-        $app->get('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response) use (&$invoked) {
+        $app->get('/foo/bar', function () use (&$invoked) {
             $invoked = true;
-
-            return $response;
+            return new Response\EmptyResponse();
         });
 
         $request = ServerRequestFactory::fromGlobals([

@@ -3,18 +3,17 @@
 namespace Photogabble\Tuppence\Tests\Feature;
 
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Photogabble\Tuppence\Tests\BootsApp;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
 class RoutesTest extends BootsApp
 {
     public function testGet()
     {
-        $this->app->get('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
-            $response->getBody()->write('Hello World!');
-            return $response;
+        $this->app->get('/foo/bar', function (){
+            return new Response\TextResponse('Hello World!');
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
@@ -29,11 +28,9 @@ class RoutesTest extends BootsApp
 
     public function testGetWithQuery()
     {
-        $this->app->get('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->get('/foo/bar', function (ServerRequestInterface $request){
             $query = $request->getQueryParams();
-
-            $response->getBody()->write($query['a']);
-            return $response;
+            return new Response\TextResponse($query['a']);
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
@@ -51,9 +48,9 @@ class RoutesTest extends BootsApp
 
     public function testPost()
     {
-        $this->app->post('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
-            $response->getBody()->write('Hello World!');
-            return $response;
+        $this->app->post('/foo/bar', function (){
+            return new Response\TextResponse('Hello World!');
+
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
@@ -68,9 +65,8 @@ class RoutesTest extends BootsApp
 
     public function testPut()
     {
-        $this->app->put('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
-            $response->getBody()->write('Hello World!');
-            return $response;
+        $this->app->put('/foo/bar', function (){
+            return new Response\TextResponse('Hello World!');
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
@@ -85,9 +81,8 @@ class RoutesTest extends BootsApp
 
     public function testPatch()
     {
-        $this->app->patch('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
-            $response->getBody()->write('Hello World!');
-            return $response;
+        $this->app->patch('/foo/bar', function (){
+            return new Response\TextResponse('Hello World!');
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
@@ -102,9 +97,8 @@ class RoutesTest extends BootsApp
 
     public function testDelete()
     {
-        $this->app->delete('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
-            $response->getBody()->write('Hello World!');
-            return $response;
+        $this->app->delete('/foo/bar', function (){
+            return new Response\TextResponse('Hello World!');
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
@@ -119,9 +113,8 @@ class RoutesTest extends BootsApp
 
     public function testOptions()
     {
-        $this->app->options('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
-            $response->getBody()->write('Hello World!');
-            return $response;
+        $this->app->options('/foo/bar', function (){
+            return new Response\TextResponse('Hello World!');
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
