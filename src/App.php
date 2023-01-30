@@ -2,42 +2,67 @@
 
 namespace Photogabble\Tuppence;
 
+use Exception;
 use League\Container\Container;
-use League\Container\ContainerInterface;
+use League\Container\DefinitionContainerInterface;
+use League\Container\ReflectionContainer;
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use League\Event\EmitterTrait;
-use League\Route\RouteCollection;
+use League\Route\Route;
+use League\Route\Strategy\ApplicationStrategy;
 use Photogabble\Tuppence\ErrorHandlers\ExceptionHandler;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerException;
-use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerResponseException;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\Response;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequestFactory;
+use League\Event\EventDispatcherAware;
+use League\Event\EventDispatcherAwareBehavior;
+use League\Route\Router;
+use Photogabble\Tuppence\Events\AfterDispatch;
+use Photogabble\Tuppence\Events\BeforeDispatch;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class App
+class App implements EventDispatcherAware
 {
-    use EmitterTrait;
+    use EventDispatcherAwareBehavior;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ?DefinitionContainerInterface $container;
 
-    /**
-     * @var RouteCollection
-     */
-    private $router;
+    private ?Router $router;
 
-    /**
-     * @var null|ExceptionHandler
-     */
-    private $exceptionHandler;
+    private ?ExceptionHandler $exceptionHandler;
 
-    public function __construct(EmitterInterface $emitter = null)
+    public function __construct(
+        EmitterInterface              $emitter = null,
+        ?DefinitionContainerInterface $container = null,
+        ?Router                       $router = null,
+        ?ExceptionHandler             $exceptionHandler = null
+    )
     {
-        $this->getContainer()->share('emitter', function () use ($emitter) {
+        if (is_null($container)) {
+            $this->setContainer(new Container());
+            $this->container->delegate(
+                new ReflectionContainer()
+            );
+        } else {
+            $this->container = $container;
+        }
+
+        if (is_null($router)) {
+            /** @var ApplicationStrategy $strategy */
+            $strategy = (new ApplicationStrategy)->setContainer($this->container);
+            /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
+            $this->router = (new Router())->setStrategy($strategy);
+        } else {
+            $this->router = $router;
+        }
+
+        $this->exceptionHandler = $exceptionHandler;
+
+        $this->container->addShared('emitter', function () use ($emitter) {
             if (is_null($emitter)) {
                 $emitter = new SapiEmitter();
             }
@@ -49,14 +74,14 @@ class App
     /**
      * Set the Container.
      *
-     * @param ContainerInterface $container
+     * @param DefinitionContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container)
+    public function setContainer(DefinitionContainerInterface $container): void
     {
         $this->container = $container;
-        $this->container->share(self::class, $this);
+        $this->container->addShared(self::class, $this);
 
-        $this->getContainer()->share('response', Response::class);
+        $this->getContainer()->addShared('response', Response::class);
 
         $this->router = null;
     }
@@ -64,31 +89,20 @@ class App
     /**
      * Get the applications Container.
      *
-     * @return ContainerInterface
+     * @return DefinitionContainerInterface
      */
-    public function getContainer()
+    public function getContainer(): DefinitionContainerInterface
     {
-        if (is_null($this->container)) {
-            $this->setContainer(new Container());
-            $this->container->delegate(
-                new \League\Container\ReflectionContainer()
-            );
-        }
-
         return $this->container;
     }
 
     /**
      * Get the route collection.
      *
-     * @return RouteCollection
+     * @return Router
      */
-    public function getRouter()
+    public function getRouter(): Router
     {
-        if (!isset($this->router)) {
-            $this->router = new RouteCollection($this->getContainer());
-        }
-
         return $this->router;
     }
 
@@ -97,7 +111,7 @@ class App
      *
      * @param AbstractServiceProvider $serviceProvider
      */
-    public function register(AbstractServiceProvider $serviceProvider)
+    public function register(AbstractServiceProvider $serviceProvider): void
     {
         $this->getContainer()->addServiceProvider($serviceProvider);
     }
@@ -107,9 +121,9 @@ class App
      *
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
-    public function get($route, $action)
+    public function get($route, $action): Route
     {
         return $this->getRouter()->map('GET', $route, $action);
     }
@@ -119,9 +133,9 @@ class App
      *
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
-    public function post($route, $action)
+    public function post($route, $action): Route
     {
         return $this->getRouter()->map('POST', $route, $action);
     }
@@ -131,9 +145,9 @@ class App
      *
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
-    public function put($route, $action)
+    public function put($route, $action): Route
     {
         return $this->getRouter()->map('PUT', $route, $action);
     }
@@ -143,9 +157,9 @@ class App
      *
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
-    public function delete($route, $action)
+    public function delete($route, $action): Route
     {
         return $this->getRouter()->map('DELETE', $route, $action);
     }
@@ -155,9 +169,9 @@ class App
      *
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
-    public function patch($route, $action)
+    public function patch($route, $action): Route
     {
         return $this->getRouter()->map('PATCH', $route, $action);
     }
@@ -167,23 +181,23 @@ class App
      *
      * @param $route
      * @param $action
-     * @return \League\Route\Route
+     * @return Route
      */
-    public function options($route, $action)
+    public function options($route, $action): Route
     {
         return $this->getRouter()->map('OPTIONS', $route, $action);
     }
 
     /**
      * @param ServerRequest|null $request
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \Exception
+     * @param bool $catchesExceptions
+     * @return ResponseInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function dispatch(ServerRequest $request = null, $catchesExceptions = true)
+    public function dispatch(?ServerRequest $request = null, bool $catchesExceptions = true): ResponseInterface
     {
-        $this->getContainer()->share('request', function () use ($request) {
+        $this->getContainer()->addShared('request', function () use ($request) {
             if (is_null($request)) {
                 $request = ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
             }
@@ -191,40 +205,30 @@ class App
             return $request;
         });
 
-        $this->emit('before.dispatch', $this->getContainer()->get('request'));
+        $this->eventDispatcher()->dispatch(new BeforeDispatch($this->getContainer()->get('request')));
 
         try {
-            return $this->getRouter()->dispatch(
-                $this->getContainer()->get('request'),
-                $this->getContainer()->get('response')
-            );
-        } catch (\Exception $e) {
-            if (!$catchesExceptions || is_null($this->exceptionHandler)) {
-                throw $e;
-            }
+            return $this->getRouter()->dispatch($this->getContainer()->get('request'));
+        } catch (Exception $e) {
+            if (!$catchesExceptions || is_null($this->exceptionHandler)) throw $e;
 
             $handler = $this->exceptionHandler;
-            $response = $handler($e, $this->getContainer()->get('request'));
-
-            if (!$response instanceof \Psr\Http\Message\ResponseInterface) {
-                throw new InvalidHandlerResponseException('The exception handler ['.get_class($handler).'] did not return a valid response.');
-            }
-
-            return $response;
+            return $handler($e, $this->getContainer()->get('request'));
         }
     }
 
     /**
      * @param ServerRequest|null $request
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return ResponseInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function run(ServerRequest $request = null)
+    public function run(ServerRequest $request = null): ResponseInterface
     {
         $response = $this->dispatch($request);
-        $this->emit('after.dispatch', $this->getContainer()->get('request'), $response);
+
+        $this->eventDispatcher()->dispatch(new AfterDispatch($this->getContainer()->get('request'), $response));
         $this->container->get('emitter')->emit($response);
 
         return $response;
@@ -232,13 +236,13 @@ class App
 
     /**
      * @param string|ExceptionHandler $exceptionHandler
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws InvalidHandlerException
      */
-    public function setExceptionHandler($exceptionHandler)
+    public function setExceptionHandler(string|ExceptionHandler $exceptionHandler): void
     {
-        if (is_string($exceptionHandler)){
+        if (is_string($exceptionHandler)) {
             $exceptionHandler = $this->getContainer()->get($exceptionHandler);
         }
 

@@ -4,17 +4,16 @@ namespace Photogabble\Tuppence\Tests;
 
 
 use Photogabble\Tuppence\App;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
+use PHPUnit\Framework\TestCase;
 
-class BootsApp extends \PHPUnit_Framework_TestCase
+class BootsApp extends TestCase
 {
-    /** @var App */
-    protected $app;
+    protected App $app;
 
-    /** @var TestEmitter */
-    protected $emitter;
+    protected TestEmitter $emitter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->bootApp();
     }
@@ -25,7 +24,7 @@ class BootsApp extends \PHPUnit_Framework_TestCase
         $this->app = new App($this->emitter);
     }
 
-    protected function runRequest(ServerRequest $request)
+    protected function runRequest(ServerRequest $request): string
     {
         $this->app->run($request);
         return (string)$this->emitter->getResponse()->getBody();

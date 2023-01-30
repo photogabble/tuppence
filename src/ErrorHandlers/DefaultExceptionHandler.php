@@ -6,32 +6,33 @@ use Exception;
 use League\Route\Http\Exception\NotFoundException as RouteNotFoundException;
 use League\Container\Exception\NotFoundException as ContainerNotFoundException;
 use Psr\Http\Message\RequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
 
 class DefaultExceptionHandler implements ExceptionHandler
 {
 
     /**
      * Exceptions this handler should ignore and pass through.
-     *
-     * @var array
      */
-    protected $ignore = [];
+    protected array $ignore = [];
 
     /**
      * @param string $class
+     * @return void
      */
-    public function addIgnored($class) {
-        array_push($this->ignore, $class);
+    public function addIgnored(string $class): void
+    {
+        $this->ignore[] = $class;
     }
 
     /**
      * @param Exception|RouteNotFoundException|ContainerNotFoundException $e
      * @param RequestInterface $request
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws Exception
+     * @return ResponseInterface
+     * @throws RouteNotFoundException
      */
-    public function __invoke(Exception $e, RequestInterface $request)
+    public function __invoke(Exception|RouteNotFoundException|ContainerNotFoundException $e, RequestInterface $request): ResponseInterface
     {
         if (in_array(get_class($e), $this->ignore)) {
             throw $e;
