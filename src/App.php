@@ -30,7 +30,7 @@ class App implements EventDispatcherAware
     /**
      * Tuppence Version.
      */
-    const VERSION = '2.0.0';
+    const VERSION = '2.0.1';
 
     use EventDispatcherAwareBehavior;
 
@@ -49,9 +49,7 @@ class App implements EventDispatcherAware
     {
         if (is_null($container)) {
             $this->setContainer(new Container());
-            $this->container->delegate(
-                new ReflectionContainer()
-            );
+            $this->container->delegate(new ReflectionContainer());
         } else {
             $this->container = $container;
         }
@@ -85,9 +83,7 @@ class App implements EventDispatcherAware
     {
         $this->container = $container;
         $this->container->addShared(self::class, $this);
-
-        $this->getContainer()->addShared('response', Response::class);
-
+        $this->container->addShared('response', Response::class);
         $this->router = null;
     }
 
