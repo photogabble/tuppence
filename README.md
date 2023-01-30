@@ -18,7 +18,7 @@ You can install tuppence into your project via composer `composer require photog
 ## 2.0 TODO List
 - [x] Target minimum php version of `^8`
 - [x] Update usage of PHPUnit from `5.7.*` to `^8.5`
-- [ ] Replace Travis-CI with GitHub Actions
+- [x] Replace Travis-CI with GitHub Actions
 - [x] Replace usage of `Zend\Diactoros` with `laminas/laminas-diactoros` as per issue #3
 - [x] Update usage of league/container from `^2.2` to `^4.2`
 - [x] Update usage of league/event from `^2.1` to `^3.0`

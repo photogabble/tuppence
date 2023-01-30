@@ -9,6 +9,9 @@
       "email": "simon.dann@gmail.com"
     }
   ],
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
   "require": {
     "php": "^8.0",
     "league/container": "^4.2",
