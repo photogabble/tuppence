@@ -2,12 +2,13 @@
 
 namespace Photogabble\Tuppence\Tests\Unit;
 
-use \Exception;
+use Exception;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\Response\JsonResponse;
+use PHPUnit\Framework\TestCase;
+use Laminas\Diactoros\ServerRequestFactory;
 
-class DefaultExceptionHandlerTest extends \PHPUnit_Framework_TestCase
+class DefaultExceptionHandlerTest extends TestCase
 {
     public function testResponse()
     {
@@ -17,10 +18,9 @@ class DefaultExceptionHandlerTest extends \PHPUnit_Framework_TestCase
         $response = $handler($exception, ServerRequestFactory::fromGlobals());
         $this->assertInstanceOf(JsonResponse::class, $response);
 
-        $jsonDecode = json_decode((string) $response->getBody()->getContents(), true);
+        $jsonDecode = json_decode($response->getBody()->getContents(), true);
 
         $this->assertEquals('Test', $jsonDecode['message']);
-
     }
 
     public function testIgnoreFunctionality()

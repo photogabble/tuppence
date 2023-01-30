@@ -2,15 +2,17 @@
 
 namespace Photogabble\Tuppence\ErrorHandlers;
 
+use Exception;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 interface ExceptionHandler
 {
     /**
-     * @param \Exception $e
+     * @param Exception $e
      * @param RequestInterface $request
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
-    public function __invoke(\Exception $e, RequestInterface $request);
+    public function __invoke(Exception $e, RequestInterface $request): ResponseInterface;
 }
 

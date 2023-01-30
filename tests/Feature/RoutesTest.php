@@ -2,25 +2,26 @@
 
 namespace Photogabble\Tuppence\Tests\Feature;
 
+use Laminas\Diactoros\Response;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Photogabble\Tuppence\Tests\BootsApp;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\ServerRequestFactory;
 
 class RoutesTest extends BootsApp
 {
     public function testGet()
     {
-        $this->app->get('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->get('/foo/bar', function () {
+            $response = new Response;
             $response->getBody()->write('Hello World!');
             return $response;
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI'    => '/foo/bar',
+            'REQUEST_URI' => '/foo/bar',
         ], [], [], [], []));
 
         $this->assertResponseOk();
@@ -29,18 +30,19 @@ class RoutesTest extends BootsApp
 
     public function testGetWithQuery()
     {
-        $this->app->get('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->get('/foo/bar', function (ServerRequestInterface $request) {
             $query = $request->getQueryParams();
 
+            $response = new Response;
             $response->getBody()->write($query['a']);
             return $response;
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI'    => '/foo/bar',
-            'QUERY_STRING'   => '?a=123',
+            'REQUEST_URI' => '/foo/bar',
+            'QUERY_STRING' => '?a=123',
         ], [
             'a' => '123'
         ], [], [], []));
@@ -51,15 +53,16 @@ class RoutesTest extends BootsApp
 
     public function testPost()
     {
-        $this->app->post('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->post('/foo/bar', function () {
+            $response = new Response;
             $response->getBody()->write('Hello World!');
             return $response;
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'POST',
-            'REQUEST_URI'    => '/foo/bar',
+            'REQUEST_URI' => '/foo/bar',
         ], [], [], [], []));
 
         $this->assertResponseOk();
@@ -68,15 +71,16 @@ class RoutesTest extends BootsApp
 
     public function testPut()
     {
-        $this->app->put('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->put('/foo/bar', function () {
+            $response = new Response;
             $response->getBody()->write('Hello World!');
             return $response;
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'PUT',
-            'REQUEST_URI'    => '/foo/bar',
+            'REQUEST_URI' => '/foo/bar',
         ], [], [], [], []));
 
         $this->assertResponseOk();
@@ -85,15 +89,16 @@ class RoutesTest extends BootsApp
 
     public function testPatch()
     {
-        $this->app->patch('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->patch('/foo/bar', function () {
+            $response = new Response;
             $response->getBody()->write('Hello World!');
             return $response;
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'PATCH',
-            'REQUEST_URI'    => '/foo/bar',
+            'REQUEST_URI' => '/foo/bar',
         ], [], [], [], []));
 
         $this->assertResponseOk();
@@ -102,15 +107,16 @@ class RoutesTest extends BootsApp
 
     public function testDelete()
     {
-        $this->app->delete('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->delete('/foo/bar', function () {
+            $response = new Response;
             $response->getBody()->write('Hello World!');
             return $response;
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'DELETE',
-            'REQUEST_URI'    => '/foo/bar',
+            'REQUEST_URI' => '/foo/bar',
         ], [], [], [], []));
 
         $this->assertResponseOk();
@@ -119,15 +125,16 @@ class RoutesTest extends BootsApp
 
     public function testOptions()
     {
-        $this->app->options('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response){
+        $this->app->options('/foo/bar', function () {
+            $response = new Response;
             $response->getBody()->write('Hello World!');
             return $response;
         });
 
         $response = $this->runRequest(ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'OPTIONS',
-            'REQUEST_URI'    => '/foo/bar',
+            'REQUEST_URI' => '/foo/bar',
         ], [], [], [], []));
 
         $this->assertResponseOk();

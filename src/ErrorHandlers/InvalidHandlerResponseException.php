@@ -2,4 +2,8 @@
 
 namespace Photogabble\Tuppence\ErrorHandlers;
 
-class InvalidHandlerResponseException extends \Exception {}
+use Exception;
+
+class InvalidHandlerResponseException extends Exception
+{
+}

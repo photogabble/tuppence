@@ -2,28 +2,29 @@
 
 namespace Photogabble\Tuppence\Tests\Unit;
 
+use Exception;
 use League\Container\Container;
 use League\Container\Exception\NotFoundException;
-use League\Event\Emitter;
-use League\Route\RouteCollection;
+use League\Event\EventDispatcher;
+use League\Route\Router;
 use Photogabble\Tuppence\App;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
-use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerException;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerResponseException;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Photogabble\Tuppence\Tests\TestEmitter;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\Response;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
+use Laminas\Diactoros\ServerRequestFactory;
 
-class AppTest extends \PHPUnit_Framework_TestCase
+class AppTest extends TestCase
 {
     protected $response;
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = $this->createMock(ServerRequestInterface::class);
         $this->response = $this->createMock(ResponseInterface::class);
@@ -34,8 +35,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $emitter = $this->createMock(EmitterInterface::class);
         $app = new App($emitter);
         $this->assertTrue($app->getContainer() instanceof Container);
-        $this->assertTrue($app->getRouter() instanceof RouteCollection);
-        $this->assertTrue($app->getEmitter() instanceof Emitter);
+        $this->assertTrue($app->getRouter() instanceof Router);
+        $this->assertTrue($app->eventDispatcher() instanceof EventDispatcher);
     }
 
     public function testAppEmitsOnRun()
@@ -44,8 +45,8 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $emitter->expects($this->once())->method('emit');
 
         $app = new App($emitter);
-        $app->get('/', function (ServerRequestInterface $request, ResponseInterface $response) {
-            return $response;
+        $app->get('/', function () {
+            return new Response;
         });
         $app->run();
     }
@@ -57,17 +58,17 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
         $invoked = false;
 
-        $app->get('/foo/bar', function (ServerRequestInterface $request, ResponseInterface $response) use (&$invoked) {
+        $app->get('/foo/bar', function () use (&$invoked) {
             $invoked = true;
 
-            return $response;
+            return new Response;
         });
 
         $request = ServerRequestFactory::fromGlobals([
-            'HTTP_HOST'      => 'example.com',
+            'HTTP_HOST' => 'example.com',
             'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI'    => '/foo/bar',
-            'QUERY_STRING'   => 'bar=baz',
+            'REQUEST_URI' => '/foo/bar',
+            'QUERY_STRING' => 'bar=baz',
         ], [], [], [], []);
 
         /* @var Response $response */
@@ -84,7 +85,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
 
         try {
             $app->run($request);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertTrue($e instanceof \League\Route\Http\Exception\NotFoundException);
         }
     }
@@ -95,7 +96,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $app = new App($emitter);
         try {
             $app->getContainer()->get('hello-world');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertTrue($e instanceof NotFoundException);
         }
     }
@@ -104,22 +105,21 @@ class AppTest extends \PHPUnit_Framework_TestCase
     {
         $emitter = new TestEmitter();
         $app = new App($emitter);
-        try{
+        try {
             $app->setExceptionHandler('');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertTrue($e instanceof NotFoundException);
         }
     }
 
     public function testExceptionHandlerInvalidClass()
     {
-        $emitter = new TestEmitter();
-        $app = new App($emitter);
-        try{
-            $app->setExceptionHandler(new TestEmitter());
-        } catch (\Exception $e) {
-            $this->assertTrue($e instanceof InvalidHandlerException);
-        }
+        $app = new App(new TestEmitter);
+
+        $this->expectException('TypeError');
+
+        /** @noinspection PhpParamsInspection */
+        $app->setExceptionHandler(new TestEmitter());
     }
 
     public function testExceptionHandlerFailsWhenNotValidResponse()
@@ -138,9 +138,9 @@ class AppTest extends \PHPUnit_Framework_TestCase
         $app->setExceptionHandler($exceptionMock);
 
         $request = ServerRequestFactory::fromGlobals();
-        try{
+        try {
             $app->dispatch($request);
-        } catch (\Exception$e) {
+        } catch (Exception$e) {
             $this->assertTrue($e instanceof InvalidHandlerResponseException);
         }
     }
