@@ -27,6 +27,11 @@ use Psr\Http\Message\ResponseInterface;
 
 class App implements EventDispatcherAware
 {
+    /**
+     * Tuppence Version.
+     */
+    const VERSION = '2.0.0';
+
     use EventDispatcherAwareBehavior;
 
     private ?DefinitionContainerInterface $container;
