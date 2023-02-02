@@ -20,7 +20,7 @@
     "laminas/laminas-httphandlerrunner": "^2.5"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.5"
+    "phpunit/phpunit": "^9.5"
   },
   "autoload": {
     "psr-4": {
