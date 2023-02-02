@@ -1,19 +1,30 @@
-<h1 align="center">Tuppence</h1>
-<p align="center"><em>An Incredibly small "framework"</em></p>
+# Tuppence
 
-<p align="center">
-  <a href="https://travis-ci.org/photogabble/tuppence"><img src="https://travis-ci.org/photogabble/tuppence.svg?branch=master" title="master"></a>
-  <a href="https://packagist.org/packages/photogabble/tuppence"><img src="https://img.shields.io/packagist/v/photogabble/tuppence.svg" alt="Latest Stable Version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/photogabble/tuppence.svg" alt="License"></a>
-</p>
+[![PHP Composer](https://github.com/photogabble/tuppence/actions/workflows/php.yml/badge.svg)](https://github.com/photogabble/tuppence/actions/workflows/php.yml)
+[![Packagist](https://img.shields.io/packagist/v/photogabble/tuppence.svg)](https://packagist.org/packages/photogabble/tuppence)
+[![MIT Licensed](https://img.shields.io/github/license/photogabble/tuppence.svg)](LICENSE)
 
 ## About Tuppence
 
-Tuppence is a very small unimposing library that brings together a [dependency injection container](http://container.thephpleague.com/), [router](http://route.thephpleague.com/) and [events](http://event.thephpleague.com/2.0/) all provided by _The League of Extraordinary Packages_.
+Tuppence is a _very small_ micro framework that brings together a [powerful PSR-11 dependency injection container](http://container.thephpleague.com/), a [fast PSR-7 router supporting PSR-15 middleware](http://route.thephpleague.com/) and a [simple and effective PSR-14 event dispatcher](http://event.thephpleague.com/3.0/) all provided by _The League of Extraordinary Packages_.
+
+Tuppence aims to be simple, lightweight and extremly flexible in order to povide the tools needed to _quickly_ write web applications and APIs.
 
 ## Installation
 
-You can install tuppence into your project via composer `composer require photogabble/tuppence`. Alternatively you can create a new project using the [tuppence boilerplate here](https://github.com/photogabble/tuppence-boilerplate).
+Its reccomended to use [Composer](https://getcomposer.org/) to install this framework and all required dependcies:
+```
+$ composer require photogabble/tuppence
+```
+
+Alternatively you can create a new project using the [tuppence boilerplate](https://github.com/photogabble/tuppence-boilerplate) via:
+
+```
+$ composer create-project photogabble/tuppence-boilerplate
+```
+
+### Requirements
+Tuppence 2.0 requires PHP 8.0 or newer.
 
 ## 2.0 TODO List
 - [x] Target minimum php version of `^8`
@@ -24,8 +35,9 @@ You can install tuppence into your project via composer `composer require photog
 - [x] Update usage of league/event from `^2.1` to `^3.0`
 - [x] Update usage of league/route from `^3.0` to `^5.1`
 - [ ] Add tests for router DI
-- [ ] Add tests for Routing to controllers 
+- [ ] Add tests for Routing to controllers
+- [ ] Add documentation
 
 ## Not invented here
 
-Tuppence drew a lot of inspiration from Proton by [Alex Bilbie](https://github.com/alexbilbie). Proton's repository has since been deleted.
+Tuppence was first created as an update to and in inspiration from Proton by [Alex Bilbie](https://github.com/alexbilbie). It appears that in the many years since then the Proton repository has been deleted.
