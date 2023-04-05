@@ -1,11 +1,11 @@
 <?php
 
-namespace Photogabble\Tuppence\Tests;
+namespace Photogabble\Tuppence\Tests\Helpers;
 
-use Psr\Http\Message\ResponseInterface;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class TestEmitter implements EmitterInterface
+final class TestEmitter implements EmitterInterface
 {
     private ResponseInterface $response;
 

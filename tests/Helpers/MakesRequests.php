@@ -1,6 +1,6 @@
 <?php
 
-namespace Photogabble\Tuppence\Tests;
+namespace Photogabble\Tuppence\Tests\Helpers;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Photogabble\Tuppence\Tests;
+namespace Photogabble\Tuppence\Tests\Helpers;
 
 
-use Photogabble\Tuppence\App;
 use Laminas\Diactoros\ServerRequest;
+use Photogabble\Tuppence\App;
 use PHPUnit\Framework\TestCase;
 
 class BootsApp extends TestCase

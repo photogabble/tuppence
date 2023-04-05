@@ -24,7 +24,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Photogabble\\Tuppence\\": "src"
+      "Photogabble\\Tuppence\\": "src",
+      "Photogabble\\Tuppence\\Tests\\Helpers\\": "tests/Helpers"
     }
   },
   "autoload-dev": {
