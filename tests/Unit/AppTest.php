@@ -3,6 +3,9 @@
 namespace Photogabble\Tuppence\Tests\Unit;
 
 use Exception;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 use League\Container\Container;
 use League\Container\Exception\NotFoundException;
 use League\Event\EventDispatcher;
@@ -10,14 +13,11 @@ use League\Route\Router;
 use Photogabble\Tuppence\App;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
 use Photogabble\Tuppence\ErrorHandlers\InvalidHandlerResponseException;
+use Photogabble\Tuppence\Tests\Helpers\TestEmitter;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Photogabble\Tuppence\Tests\TestEmitter;
-use Laminas\Diactoros\Response;
-use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
-use Laminas\Diactoros\ServerRequestFactory;
 
 class AppTest extends TestCase
 {

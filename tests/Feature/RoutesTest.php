@@ -3,11 +3,11 @@
 namespace Photogabble\Tuppence\Tests\Feature;
 
 use Laminas\Diactoros\Response;
+use Laminas\Diactoros\ServerRequestFactory;
 use League\Route\Http\Exception\NotFoundException;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
+use Photogabble\Tuppence\Tests\Helpers\BootsApp;
 use Psr\Http\Message\ServerRequestInterface;
-use Photogabble\Tuppence\Tests\BootsApp;
-use Laminas\Diactoros\ServerRequestFactory;
 
 class RoutesTest extends BootsApp
 {
