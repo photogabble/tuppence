@@ -3,6 +3,7 @@
 namespace Photogabble\Tuppence\Tests\Feature;
 
 use Laminas\Diactoros\Response;
+use League\Route\Http\Exception\NotFoundException;
 use Photogabble\Tuppence\ErrorHandlers\DefaultExceptionHandler;
 use Psr\Http\Message\ServerRequestInterface;
 use Photogabble\Tuppence\Tests\BootsApp;
@@ -139,6 +140,11 @@ class RoutesTest extends BootsApp
 
         $this->assertResponseOk();
         $this->assertEquals('Hello World!', $response);
+    }
+
+    public function testNotFound() {
+        $this->expectException(NotFoundException::class);
+        $this->runRequest(ServerRequestFactory::fromGlobals());
     }
 
     public function testExceptionHandled()
