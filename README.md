@@ -8,11 +8,11 @@
 
 Tuppence is a _very small_ micro framework that brings together a [powerful PSR-11 dependency injection container](http://container.thephpleague.com/), a [fast PSR-7 router supporting PSR-15 middleware](http://route.thephpleague.com/) and a [simple and effective PSR-14 event dispatcher](http://event.thephpleague.com/3.0/) all provided by _The League of Extraordinary Packages_.
 
-Tuppence aims to be simple, lightweight and extremly flexible in order to povide the tools needed to _quickly_ write web applications and APIs.
+Tuppence aims to be simple, lightweight and extremely flexible in order to provide the tools needed to _quickly_ write web applications and APIs.
 
 ## Installation
 
-Its reccomended to use [Composer](https://getcomposer.org/) to install this framework and all required dependcies:
+Its recommended to use [Composer](https://getcomposer.org/) to install this framework and all required dependencies:
 ```
 $ composer require photogabble/tuppence
 ```
