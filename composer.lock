@@ -105,30 +105,30 @@
         },
         {
             "name": "laminas/laminas-httphandlerrunner",
-            "version": "2.5.0",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-httphandlerrunner.git",
-                "reference": "7a47834aaad7852816d2ec4fdbb0492163b039ae"
+                "reference": "4845298215708c660f76a2d5d8b78e67979457c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/7a47834aaad7852816d2ec4fdbb0492163b039ae",
-                "reference": "7a47834aaad7852816d2ec4fdbb0492163b039ae",
+                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/4845298215708c660f76a2d5d8b78e67979457c5",
+                "reference": "4845298215708c660f76a2d5d8b78e67979457c5",
                 "shasum": ""
             },
             "require": {
-                "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
-                "psr/http-message": "^1.0",
+                "php": "~8.1.0 || ~8.2.0",
+                "psr/http-message": "^1.0 || ^2.0",
                 "psr/http-message-implementation": "^1.0",
                 "psr/http-server-handler": "^1.0"
             },
             "require-dev": {
-                "laminas/laminas-coding-standard": "~2.4.0",
-                "laminas/laminas-diactoros": "^2.18",
-                "phpunit/phpunit": "^9.5.26",
-                "psalm/plugin-phpunit": "^0.18.0",
-                "vimeo/psalm": "^5.0.0"
+                "laminas/laminas-coding-standard": "~2.5.0",
+                "laminas/laminas-diactoros": "^2.25.1",
+                "phpunit/phpunit": "^10.0.19",
+                "psalm/plugin-phpunit": "^0.18.4",
+                "vimeo/psalm": "^5.9"
             },
             "type": "library",
             "extra": {
@@ -168,7 +168,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2023-01-05T21:54:03+00:00"
+            "time": "2023-04-09T21:49:08+00:00"
         },
         {
             "name": "league/container",
