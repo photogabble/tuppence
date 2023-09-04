@@ -16,7 +16,7 @@
     "league/container": "^4.2",
     "league/event": "^3.0",
     "league/route": "^5.1",
-    "laminas/laminas-diactoros": "^2.24",
+    "laminas/laminas-diactoros": "^3.2",
     "laminas/laminas-httphandlerrunner": "^2.5"
   },
   "require-dev": {
