@@ -26,18 +26,16 @@ jobs:
           php-version: ${{ matrix.php-versions }}
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
       - name: Cache Composer packages
+        id: composer-cache
         uses: actions/cache@v4
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: vendor
           key: ${{ runner.os }}-${{ matrix.php-versions }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.php-versions }}-
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        if: steps.composer-cache.outputs.cache-hit != 'true' # Skip if cache hit
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Run test suite
         run: composer run-script test
