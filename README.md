@@ -12,7 +12,7 @@ Tuppence aims to be simple, lightweight and extremely flexible in order to provi
 
 ## Installation
 
-Its recommended to use [Composer](https://getcomposer.org/) to install this framework and all required dependencies:
+It's recommended to use [Composer](https://getcomposer.org/) to install this framework and all required dependencies:
 ```
 $ composer require photogabble/tuppence
 ```
@@ -34,9 +34,7 @@ Tuppence 2.0 requires PHP 8.0 or newer.
 - [x] Update usage of league/container from `^2.2` to `^4.2`
 - [x] Update usage of league/event from `^2.1` to `^3.0`
 - [x] Update usage of league/route from `^3.0` to `^5.1`
-- [ ] Add tests for router DI
-- [ ] Add tests for Routing to controllers
-- [ ] Add documentation
+- [ ] Add usage documentation
 
 ## Not invented here
 
