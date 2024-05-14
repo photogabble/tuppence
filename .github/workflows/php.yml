@@ -16,7 +16,7 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest, windows-latest, macOS-latest]
         php-versions: ['8.1', '8.2', '8.3']
-    name: PHP ${{ matrix.php-versions }} Test on ${{ runner.os }}
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
