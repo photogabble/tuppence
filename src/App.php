@@ -43,7 +43,7 @@ class App implements EventDispatcherAware
     private ?ExceptionHandler $exceptionHandler;
 
     public function __construct(
-        EmitterInterface              $emitter = null,
+        ?EmitterInterface              $emitter = null,
         ?DefinitionContainerInterface $container = null,
         ?Router                       $router = null,
         ?ExceptionHandler             $exceptionHandler = null
@@ -239,7 +239,7 @@ class App implements EventDispatcherAware
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function run(ServerRequest $request = null): ResponseInterface
+    public function run(?ServerRequest $request = null): ResponseInterface
     {
         $response = $this->dispatch($request);
 
