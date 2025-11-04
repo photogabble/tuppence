@@ -34,6 +34,8 @@ class App implements EventDispatcherAware
 
     use EventDispatcherAwareBehavior;
 
+    protected static App $instance;
+
     private ?DefinitionContainerInterface $container;
 
     private ?Router $router;
@@ -72,6 +74,18 @@ class App implements EventDispatcherAware
 
             return $emitter;
         });
+
+        static::$instance = $this;
+    }
+
+    public static function getInstance(): static
+    {
+        return static::$instance ??= new static;
+    }
+
+    public static function setInstance(App $container): void
+    {
+        static::$instance = $container;
     }
 
     /**

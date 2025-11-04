@@ -165,4 +165,38 @@ class AppTest extends TestCase
         $request = ServerRequestFactory::fromGlobals();
         $app->dispatch($request);
     }
+
+    public function testGetInstance()
+    {
+        $app = new App(new TestEmitter);
+        $app->getContainer()->add('hello-world', 'Hello World!');;
+
+        $instance = App::getInstance();
+
+        $this->assertInstanceOf(App::class, $instance);
+        $this->assertSame($app, $instance, 'getInstance should return the same instance');
+        $this->assertEquals('Hello World!', $instance->getContainer()->get('hello-world'));
+    }
+
+    public function testSetInstance()
+    {
+        $app = new App(new TestEmitter);
+        $app->getContainer()->add('hello-world', 'Hello World!');;
+
+        $app2 = new App(new TestEmitter);
+
+        $instance = App::getInstance();
+        $this->assertNotSame($app, $instance);
+
+        $instance = App::getInstance();
+        $this->assertNotSame($app, $instance);
+        $this->assertSame($app2, $instance);
+
+        App::setInstance($app);
+
+        $instance = App::getInstance();
+        $this->assertSame($app, $instance);
+        $this->assertNotSame($app2, $instance);
+    }
+
 }
