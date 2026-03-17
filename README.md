@@ -17,23 +17,16 @@ It's recommended to use [Composer](https://getcomposer.org/) to install this fra
 $ composer require photogabble/tuppence
 ```
 
-Alternatively you can create a new project using the [tuppence boilerplate](https://github.com/photogabble/tuppence-boilerplate) via:
+Alternatively, you can create a new project using the [tuppence boilerplate](https://github.com/photogabble/tuppence-boilerplate) via:
 
 ```
 $ composer create-project photogabble/tuppence-boilerplate
 ```
 
 ### Requirements
-Tuppence 2.0 requires PHP 8.0 or newer.
+Tuppence requires PHP 8.4 or newer, and I will not provide support for older versions of PHP.
 
-## 2.0 TODO List
-- [x] Target minimum php version of `^8`
-- [x] Update usage of PHPUnit from `5.7.*` to `^8.5`
-- [x] Replace Travis-CI with GitHub Actions
-- [x] Replace usage of `Zend\Diactoros` with `laminas/laminas-diactoros` as per issue #3
-- [x] Update usage of league/container from `^2.2` to `^4.2`
-- [x] Update usage of league/event from `^2.1` to `^3.0`
-- [x] Update usage of league/route from `^3.0` to `^5.1`
+## 3.0 TODO List
 - [ ] Add usage documentation
 
 ## Not invented here

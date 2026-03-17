@@ -30,7 +30,7 @@ class App implements EventDispatcherAware
     /**
      * Tuppence Version.
      */
-    const VERSION = '2.0.6';
+    const string VERSION = '3.0.0';
 
     use EventDispatcherAwareBehavior;
 
