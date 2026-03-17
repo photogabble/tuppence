@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Changed: The minimum supported PHP version increased from ^8 to ^8.4
 
 ## [2.0.6] – Nov 4, 2025
 - Changed: Implicitly marking parameters as nullable is deprecated (9eb31fd)

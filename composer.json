@@ -12,7 +12,7 @@
     "test": "vendor/bin/phpunit"
   },
   "require": {
-    "php": "^8.0",
+    "php": "^8.4",
     "league/container": "^4.2",
     "league/event": "^3.0",
     "league/route": "^5.1",
