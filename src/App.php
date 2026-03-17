@@ -27,9 +27,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class App implements EventDispatcherAware
 {
-    /**
-     * Tuppence Version.
-     */
     const string VERSION = '3.0.0';
 
     use EventDispatcherAwareBehavior;
@@ -38,7 +35,11 @@ class App implements EventDispatcherAware
 
     private ?DefinitionContainerInterface $container;
 
-    private ?Router $router;
+    public ?Router $router {
+        get {
+            return $this->router;
+        }
+    }
 
     private ?ExceptionHandler $exceptionHandler;
 
@@ -60,7 +61,7 @@ class App implements EventDispatcherAware
             /** @var ApplicationStrategy $strategy */
             $strategy = (new ApplicationStrategy)->setContainer($this->container);
             /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
-            $this->router = (new Router())->setStrategy($strategy);
+            $this->router = new Router()->setStrategy($strategy);
         } else {
             $this->router = $router;
         }
@@ -112,16 +113,6 @@ class App implements EventDispatcherAware
     }
 
     /**
-     * Get the route collection.
-     *
-     * @return Router
-     */
-    public function getRouter(): Router
-    {
-        return $this->router;
-    }
-
-    /**
      * Register a new service provider with the container.
      *
      * @param AbstractServiceProvider $serviceProvider
@@ -140,7 +131,7 @@ class App implements EventDispatcherAware
      */
     public function get($route, $action): Route
     {
-        return $this->getRouter()->map('GET', $route, $action);
+        return $this->router->map('GET', $route, $action);
     }
 
     /**
@@ -152,7 +143,7 @@ class App implements EventDispatcherAware
      */
     public function post($route, $action): Route
     {
-        return $this->getRouter()->map('POST', $route, $action);
+        return $this->router->map('POST', $route, $action);
     }
 
     /**
@@ -164,7 +155,7 @@ class App implements EventDispatcherAware
      */
     public function put($route, $action): Route
     {
-        return $this->getRouter()->map('PUT', $route, $action);
+        return $this->router->map('PUT', $route, $action);
     }
 
     /**
@@ -176,7 +167,7 @@ class App implements EventDispatcherAware
      */
     public function delete($route, $action): Route
     {
-        return $this->getRouter()->map('DELETE', $route, $action);
+        return $this->router->map('DELETE', $route, $action);
     }
 
     /**
@@ -188,11 +179,11 @@ class App implements EventDispatcherAware
      */
     public function patch($route, $action): Route
     {
-        return $this->getRouter()->map('PATCH', $route, $action);
+        return $this->router->map('PATCH', $route, $action);
     }
 
     /**
-     * Add a OPTIONS route.
+     * Add an OPTIONS route.
      *
      * @param $route
      * @param $action
@@ -200,7 +191,7 @@ class App implements EventDispatcherAware
      */
     public function options($route, $action): Route
     {
-        return $this->getRouter()->map('OPTIONS', $route, $action);
+        return $this->router->map('OPTIONS', $route, $action);
     }
 
     /**
@@ -223,7 +214,7 @@ class App implements EventDispatcherAware
         $this->eventDispatcher()->dispatch(new BeforeDispatch($this->getContainer()->get('request')));
 
         try {
-            return $this->getRouter()->dispatch($this->getContainer()->get('request'));
+            return $this->router->dispatch($this->getContainer()->get('request'));
         } catch (Exception $e) {
             if (!$catchesExceptions || is_null($this->exceptionHandler)) throw $e;
 

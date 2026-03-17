@@ -35,7 +35,7 @@ class AppTest extends TestCase
         $emitter = $this->createMock(EmitterInterface::class);
         $app = new App($emitter);
         $this->assertTrue($app->getContainer() instanceof Container);
-        $this->assertTrue($app->getRouter() instanceof Router);
+        $this->assertTrue($app->router instanceof Router);
         $this->assertTrue($app->eventDispatcher() instanceof EventDispatcher);
     }
 
