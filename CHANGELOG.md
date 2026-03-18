@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- Changed: The minimum supported PHP version increased from ^8 to ^8.4
+- Changed: The minimum supported PHP version increased from ^8 to >=8.4.1
+- Changed: Replaced `getRouter` method with property hook, this is a breaking change, if used.
+- Changed: Updated PHPUnit from 11.3.3 to ^13.0
+- Changed: Update usage of `league/route` from ^5.1 to ^6.2
+- Changed: Update usage of `league/container` from ^4.2 to ^5.1
 
 ## [2.0.6] – Nov 4, 2025
 - Changed: Implicitly marking parameters as nullable is deprecated (9eb31fd)

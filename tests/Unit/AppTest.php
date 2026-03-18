@@ -26,13 +26,13 @@ class AppTest extends TestCase
 
     public function setUp(): void
     {
-        $this->request = $this->createMock(ServerRequestInterface::class);
-        $this->response = $this->createMock(ResponseInterface::class);
+        $this->request = $this->createStub(ServerRequestInterface::class);
+        $this->response = $this->createStub(ResponseInterface::class);
     }
 
     public function testInstances()
     {
-        $emitter = $this->createMock(EmitterInterface::class);
+        $emitter = $this->createStub(EmitterInterface::class);
         $app = new App($emitter);
         $this->assertTrue($app->getContainer() instanceof Container);
         $this->assertTrue($app->router instanceof Router);

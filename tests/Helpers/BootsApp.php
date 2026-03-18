@@ -18,7 +18,7 @@ class BootsApp extends TestCase
         $this->bootApp();
     }
 
-    protected function bootApp()
+    protected function bootApp(): void
     {
         $this->emitter = new TestEmitter();
         $this->app = new App($this->emitter);
@@ -30,12 +30,12 @@ class BootsApp extends TestCase
         return (string)$this->emitter->getResponse()->getBody();
     }
 
-    protected function assertResponseOk()
+    protected function assertResponseOk(): void
     {
         $this->assertEquals(200, $this->emitter->getResponse()->getStatusCode());
     }
 
-    protected function assertResponseCodeEquals($code = 200)
+    protected function assertResponseCodeEquals($code = 200): void
     {
         $this->assertEquals($code, $this->emitter->getResponse()->getStatusCode());
     }
